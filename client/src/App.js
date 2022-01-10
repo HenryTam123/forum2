@@ -24,14 +24,14 @@ const App = () => {
     const [isUpdate, setIsUpdate] = useState(false)
     const [err, setError] = useState('')
 
-    const getUsers = async () => {
-        const res = await axios.get('/users', { withCredentials: true })
-        console.log(res.data)
-        setUsers(res.data)
-    }
-    useEffect(async () => {
+    useEffect(() => {
         if (localStorage.getItem('username') && localStorage.getItem('password') && !isLoggedIn) {
             login(localStorage.getItem('username'), localStorage.getItem('password'))
+        } else if (localStorage.getItem('googleLoginData')) {
+            console.log(localStorage.getItem('googleLoginData'))
+            setCurrentUser(JSON.parse(localStorage.getItem('googleLoginData')));
+            setIsLoggedIn(true)
+            handleLogin(false)
         }
         getPost()
         getCategory()
@@ -39,6 +39,11 @@ const App = () => {
 
     }, [isUpdate])
 
+    const getUsers = async () => {
+        const res = await axios.get('/users', { withCredentials: true })
+        console.log(res.data)
+        setUsers(res.data)
+    }
     const getPost = async () => {
         const res = await axios.get('/posts')
         const posts = res.data
@@ -78,31 +83,34 @@ const App = () => {
             })
 
     }
-    const login = async (username, password) => {
+    const login = async (username, password, isGoogleLogin = false) => {
         const user = {
             username: username,
             password: password
         }
-        axios.post('/login', user, { withCredentials: true })
-            .then(res => {
-                console.log(res.data)
-                if (res.data.username) {
-                    if (!localStorage.getItem('username') && !localStorage.getItem('password') && !isLoggedIn) {
-                        localStorage.setItem('username', username)
-                        localStorage.setItem('password', password)
+        if (!isGoogleLogin) {
+            axios.post('/login', user, { withCredentials: true })
+                .then(res => {
+                    console.log(res.data)
+                    if (res.data.username) {
+                        if (!localStorage.getItem('username') && !localStorage.getItem('password') && !isLoggedIn) {
+                            localStorage.setItem('username', username)
+                            localStorage.setItem('password', password)
+                        }
+                        setCurrentUser(res.data)
+                        setIsLoggedIn(true)
+                        handleLogin(false)
+                    } else {
+                        if (res.status === 400) {
+                            setError(res.data.message)
+                        }
                     }
-                    setCurrentUser(res.data)
-                    setIsLoggedIn(true)
-                    handleLogin(false)
-                } else {
-                    if (res.status === 400) {
-                        setError(res.data.message)
-                    }
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+            // if it is google login 
+        }
 
     }
     const handleLike = async (postId) => {
@@ -135,10 +143,10 @@ const App = () => {
     return (
         <div className="body">
             <div className="main-container">
-                {isLogging ? <LoginForm handleLogin={handleLogin} login={login} err={err} /> : ""}
-                {isRegistering ? <RegisterForm handleRegister={handleRegister} /> : ""}
-                {formVisible ? <Form handleFormVisible={handleFormVisible} categories={categories} currentUser={currentUser} /> : ""}
                 <Router>
+                    {isLogging ? <LoginForm handleLogin={handleLogin} login={login} err={err} setCurrentUser={(user) => setCurrentUser(user)} setIsLoggedIn={setIsLoggedIn} setIsLogging={setIsLogging} /> : ""}
+                    {isRegistering ? <RegisterForm handleRegister={handleRegister} /> : ""}
+                    {formVisible ? <Form handleFormVisible={handleFormVisible} categories={categories} currentUser={currentUser} /> : ""}
                     <Sidebar
                         posts={posts}
                         categories={categories}

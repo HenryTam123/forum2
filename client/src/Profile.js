@@ -8,7 +8,7 @@ const Profile = ({ user = {}, closeProfile }) => {
 
     return (
         <div className="form-container profile-container">
-            <div className="overlay-background"></div>
+            <div className="overlay-background" onClick={() => closeProfile()}></div>
             <form className="login-form profile" >
                 <div className='profile-head'>
                     <h2 className='header-center'>Profile of {user.username}</h2>
@@ -35,7 +35,7 @@ const Profile = ({ user = {}, closeProfile }) => {
                     <button type="button" className="cancel-btn" onClick={() => closeProfile()}>Close</button>
                 </div>
             </form>
-        </div>
+        </div >
     )
 }
 

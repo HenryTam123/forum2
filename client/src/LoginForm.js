@@ -1,14 +1,43 @@
 import React, { useState } from 'react'
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { handleGoogleLogin } from './helpers/googleLogin.js';
+import { useHistory } from "react-router-dom";
 
 
-const LoginForm = ({ handleLogin, login, err }) => {
+const clientId = "788803847730-svb1dp8j89olr8o0rh1g30a7kl8ugbk6.apps.googleusercontent.com";
+
+const LoginForm = ({ handleLogin, login, err, setCurrentUser, setIsLoggedIn, setIsLogging }) => {
+    let history = useHistory();
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+
+    const [showloginButton, setShowloginButton] = useState(true);
+    const [showlogoutButton, setShowlogoutButton] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault()
         login(username, password)
     }
+
+    const onLoginSuccess = async (res) => {
+        let existingUser = await handleGoogleLogin(res)
+        console.log(existingUser)
+        setCurrentUser(existingUser)
+        setIsLoggedIn(true)
+        setIsLogging(false)
+        history.push("/");
+    };
+
+    const onLoginFailure = (res) => {
+        console.log('Login Failed:', res);
+    };
+
+    const onSignoutSuccess = () => {
+        alert("You have been logged out successfully");
+        setShowloginButton(true);
+        setShowlogoutButton(false);
+    };
 
     return (
         <div className="form-container">
@@ -21,6 +50,20 @@ const LoginForm = ({ handleLogin, login, err }) => {
                     <button type="button" className="cancel-btn" onClick={() => handleLogin(false)}>Cancel</button>
                     <button type="submit" className="submit-btn" >Login</button>
                 </div>
+                <GoogleLogin
+                    clientId={clientId}
+                    buttonText="Login with Google"
+                    onSuccess={onLoginSuccess}
+                    onFailure={onLoginFailure}
+                    cookiePolicy={'single_host_origin'}
+                    className='google-login'
+                />
+                {showlogoutButton && <GoogleLogout
+                    clientId={clientId}
+                    buttonText="Logout"
+                    onLogoutSuccess={onSignoutSuccess}
+                >
+                </GoogleLogout>}
             </form>
         </div>
     )

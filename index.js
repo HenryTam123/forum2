@@ -1,25 +1,25 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors'
-import postRoutes from './routes/posts.js'
-import categoryRoutes from './routes/categories.js'
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors')
+const postRoutes = require('./routes/posts.js')
+const categoryRoutes = require('./routes/categories.js')
+const User = require('./models/User.js')
+const Image = require('./models/image.js')
+const dotenv = require('dotenv')
+const cookieParser = require('cookie-parser')
+const bcrypt = require("bcrypt")
+const OAuth2Client = require('google-auth-library');
+const postApis = require('./routes/posts')
+const categoryApis = require('./routes/categories')
 
-import User from './models/User.js'
-import Image from './models/image.js'
-import dotenv from 'dotenv'
-import cookieParser from 'cookie-parser'
-
-import bcrypt from "bcrypt";
+dotenv.config()
 
 
+const client = new OAuth2Client(process.env.CLIENT_ID)
+
+// const oAuth2Client = new OAuth2Client();
+// const client = new GoogleAuth(process.env.CLIENT_ID)
 const app = express()
-
-// const corsOptions = {
-//     origin: ['https://tjhkg-forum-alpha.netlify.app', 'https://henrytam123.github.io/'],
-//     origin: 'http://localhost:3000',
-//     optionsSuccess: 200,
-//     credentials: true,
-// }
 const allowedOrigins = ['https://tjhkg-forum-alpha.netlify.app', 'https://henrytam123.github.io', 'http://localhost:3000']
 const corsOptions = {
     origin: function (origin, callback) {
@@ -40,10 +40,17 @@ app.use(cookieParser())
 
 // const store = new session.MemoryStore()
 
-dotenv.config()
+// app.use('/posts', postRoutes)
+app.get('/categories/', categoryApis.getAllCategories);
+app.post('/categories/', categoryApis.createCategory);
 
-app.use('/posts', postRoutes)
-app.use('/categories', categoryRoutes)
+
+app.get('/posts', postApis.getPosts);
+app.post('/posts', postApis.postPost);
+app.post('/posts/post', postApis.getSpecificPost);
+app.post('/posts/comments', postApis.getAllComments);
+app.patch('/posts/like', postApis.likePost);
+app.patch('/posts/dislike', postApis.dislikePost);
 
 app.post("/uploadphoto", async (req, res) => {
     const selectedFile = req.body
@@ -69,8 +76,6 @@ app.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
 
         newUser.password = await bcrypt.hash(user.password, salt)
-
-        console.log(newUser.password)
 
         newUser.save()
             .then(data => {
@@ -120,6 +125,44 @@ app.get('/users', async (req, res) => {
 
     } catch (err) {
         res.status(404).json({ message: err.message })
+    }
+})
+
+app.post("/api/v1/auth/google", async (req, res) => {
+    try {
+        const { token } = req.body
+
+        const oAuthClient = new client.OAuth2()
+
+        let ticket = {};
+
+        let returnUser = {};
+
+        await oAuthClient.verifyIdToken(
+            token,
+            process.env.CLIENT_ID,
+            async (err, login) => {
+                ticket = login._payload
+                let existingUser = await User.findOne({ email: ticket.email })
+                console.log(login)
+                returnUser = existingUser;
+
+                if (!existingUser) {
+                    let newUser = new User({
+                        username: ticket.name,
+                        email: ticket.email,
+                        icon: ticket.picture
+                    });
+
+                    await newUser.save();
+
+                    returnUser = await User.findOne({ email: ticket.email })
+                }
+                res.status(201).send(returnUser)
+            }
+        );
+    } catch (err) {
+        res.send(err)
     }
 })
 

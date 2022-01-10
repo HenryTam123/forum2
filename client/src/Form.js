@@ -13,8 +13,7 @@ const Form = ({ handleFormVisible, categories, currentUser }) => {
             title: title,
             category: category
         }
-        console.log(newPost)
-        const res = await axios.post('/posts', { newPost }, { withCredentials: true })
+        const res = await axios.post('/posts', { ...newPost }, { withCredentials: true })
         window.location.reload()
     }
     return (

@@ -1,143 +1,147 @@
-import express from 'express'
-import PostMessage from '../models/postMessage.js'
-import Category from '../models/category.js'
-import Response from '../models/response.js'
-import mongodb from 'mongodb'
-
-
-const router = express.Router()
+const express = require('express')
+const mongodb = require('mongodb')
+const PostMessage = require('../models/PostMessage.js')
+const Category = require('../models/category.js')
+const Response = require('../models/response.js')
 const ObjectId = mongodb.ObjectID
 
-// fetch all posts by category
-router.get('/', async (req, res) => {
 
-    const cat = req.query.cat
+postApis = {
+    // fetch all posts by category
+    getPosts: async function (req, res) {
 
-    console.log(cat)
+        const cat = req.query.cat
 
-    try {
-        const postMessages = await PostMessage.find()
-        res.status(200).json(postMessages)
+        console.log(cat)
 
-    } catch (err) {
-        res.status(404).json({ message: err.message })
-    }
-})
+        try {
+            const postMessages = await PostMessage.find()
+            res.status(200).json(postMessages)
 
-// fetch a specific post 
-router.post('/post', async (req, res) => {
-    const { id } = req.body
-    try {
-        // get information of a post
-        const postMessages = await PostMessage.find({ _id: id })
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    },
 
-        res.status(200).json(postMessages)
+    postPost: async function (req, res) {
+        try {
 
-    } catch (err) {
-        res.status(404).json({ message: err.message })
-    }
-})
+            const { creator, title, category } = req.body
 
-// get all comments of a post
-router.post('/comments', async (req, res) => {
-    try {
+            let newPost = new PostMessage({
+                creator: creator,
+                title: title,
+                category: category
+            })
 
-        const { postId } = req.body;
+            let createdPost = await newPost.save()
+            console.log(createdPost)
 
-        const postMessages = await PostMessage.findOne({ _id: postId })
+            let updatedCategory = Category.findOneAndUpdate({ category: category }, { '$push': { 'posts': ObjectId(createdPost._id) } }, (err, doc) => {
+                console.log(doc)
+            })
 
-        const responses = await Response.find({ "_id": { $in: postMessages.response } })
+            console.log(newPost)
 
-        res.status(200).json(responses)
+            res.status(200).json(newPost)
 
-    } catch (err) {
-        res.status(404).json({ message: err.message })
-    }
-})
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    },
 
-// post comment to a post
-router.post('/response', async (req, res) => {
-    const response = req.body.response
-    const newResponse = new Response(response)
+    // fetch a specific post 
+    getSpecificPost: async function (req, res) {
+        const { id } = req.body
+        try {
+            // get information of a post
+            const postMessages = await PostMessage.find({ _id: id })
 
-    try {
-        await newResponse.save()
+            res.status(200).json(postMessages)
 
-        await PostMessage.findOne({ "_id": ObjectId(response.id) }, (err, matchedPost) => {
-            if (matchedPost) {
-                console.log(matchedPost)
-                matchedPost.response.push(newResponse)
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    },
+
+    // get all comments of a post
+    getAllComments: async function (req, res) {
+        try {
+
+            const { postId } = req.body;
+
+            const postMessages = await PostMessage.findOne({ _id: postId })
+
+            const responses = await Response.find({ "_id": { $in: postMessages.response } })
+
+            res.status(200).json(responses)
+
+        } catch (err) {
+            res.status(404).json({ message: err.message })
+        }
+    },
+
+    // post comment to a post
+    postComment: async function (req, res) {
+        const response = req.body.response
+        const newResponse = new Response(response)
+
+        try {
+            await newResponse.save()
+
+            await PostMessage.findOne({ "_id": ObjectId(response.id) }, (err, matchedPost) => {
+                if (matchedPost) {
+                    console.log(matchedPost)
+                    matchedPost.response.push(newResponse)
+                    matchedPost.save()
+                }
+            })
+            const postMessage = await PostMessage.find({ "_id": ObjectId(response.id) })
+            res.status(201).json(postMessage)
+
+        } catch (err) {
+            res.status(409).json({ message: err.message })
+        }
+    },
+
+    // like a post
+    likePost: async function (req, res) {
+        const username = req.body.data.username
+        const id = req.body.data.id
+
+        try {
+            await PostMessage.findOne({ "_id": ObjectId(id) }, (err, matchedPost) => {
+                if (matchedPost.likeCount.includes(username)) {
+                    matchedPost.likeCount.splice(matchedPost.likeCount.indexOf(username), 1)
+                } else {
+                    matchedPost.likeCount.push(username)
+                }
                 matchedPost.save()
-            }
-        })
-        const postMessage = await PostMessage.find({ "_id": ObjectId(response.id) })
-        res.status(201).json(postMessage)
+                res.status(200).json(matchedPost)
+            })
+        } catch (err) {
+            req.json({ message: err })
+        }
+    },
 
-    } catch (err) {
-        res.status(409).json({ message: err.message })
+    // dislike a post
+    dislikePost: async function (req, res) {
+        const username = req.body.data.username
+        const id = req.body.data.id
+
+        try {
+            await PostMessage.findOne({ "_id": ObjectId(id) }, (err, matchedPost) => {
+                if (matchedPost.dislikeCount.includes(username)) {
+                    matchedPost.dislikeCount.splice(matchedPost.dislikeCount.indexOf(username), 1)
+                } else {
+                    matchedPost.dislikeCount.push(username)
+                }
+                matchedPost.save()
+                res.status(200).json(matchedPost)
+            })
+        } catch (err) {
+            req.json({ message: err })
+        }
     }
-})
-
-// like a post
-router.patch('/like', async (req, res) => {
-    const username = req.body.data.username
-    const id = req.body.data.id
-
-    try {
-        await PostMessage.findOne({ "_id": ObjectId(id) }, (err, matchedPost) => {
-            if (matchedPost.likeCount.includes(username)) {
-                matchedPost.likeCount.splice(matchedPost.likeCount.indexOf(username), 1)
-            } else {
-                matchedPost.likeCount.push(username)
-            }
-            matchedPost.save()
-            res.status(200).json(matchedPost)
-        })
-    } catch (err) {
-        req.json({ message: err })
-    }
-})
-
-// dislike a post
-router.patch('/dislike', async (req, res) => {
-    const username = req.body.data.username
-    const id = req.body.data.id
-
-    try {
-        await PostMessage.findOne({ "_id": ObjectId(id) }, (err, matchedPost) => {
-            if (matchedPost.dislikeCount.includes(username)) {
-                matchedPost.dislikeCount.splice(matchedPost.dislikeCount.indexOf(username), 1)
-            } else {
-                matchedPost.dislikeCount.push(username)
-            }
-            matchedPost.save()
-            res.status(200).json(matchedPost)
-        })
-    } catch (err) {
-        req.json({ message: err })
-    }
-})
-
-router.post('/', async (req, res) => {
-    const post = req.body.newPost
-    const newPost = new PostMessage(post)
-
-    try {
-        await newPost.save()
-
-        await Category.findOne({ category: newPost.category }, (err, matchedCategory) => {
-            if (matchedCategory) {
-                console.log(matchedCategory)
-                matchedCategory.posts.push(newPost)
-                matchedCategory.save()
-
-                res.status(201).json(newPost)
-            }
-        })
-    } catch (err) {
-        res.status(409).json({ message: err.message })
-    }
-})
-
-
-export default router
+}
+module.exports = postApis

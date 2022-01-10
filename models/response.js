@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const responseSchema = mongoose.Schema({
     responseContent: String,
@@ -7,4 +7,4 @@ const responseSchema = mongoose.Schema({
 
 const Response = mongoose.model('Response', responseSchema)
 
-export default Response;
+module.exports = Response

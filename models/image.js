@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const imageSchema = mongoose.Schema({
     selectedFile: String
@@ -6,4 +6,4 @@ const imageSchema = mongoose.Schema({
 
 const Image = mongoose.model('Image', imageSchema)
 
-export default Image;
+module.exports = Image
