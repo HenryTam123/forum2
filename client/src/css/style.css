@@ -18,6 +18,8 @@
 .main-container{
     max-width: 1600px;
     max-height: 920px;
+    background-color: rgb(245, 237, 237);
+
 }
 h2, p{
     font-family: 'Roboto', sans-serif;
@@ -57,6 +59,7 @@ button:focus{
     background-color:  #69a3a3;
     display: flex;
     flex-direction: column;
+    transition: 0.3s ease all;
 }
 
 .sidebar .upper .header{
@@ -219,7 +222,6 @@ button:focus{
 
 .main-container .post-container{
     width: 100%;
-    padding: 20px;
     padding-bottom: 0px;
     display: flex;
     flex-wrap: wrap;
@@ -276,6 +278,7 @@ button:focus{
     min-width: 350px;
     margin: 20px;
     transition: 0.2s ease all;
+    max-width: 500px;
 }
 
 .main-content .post-container .post:hover{
@@ -291,8 +294,32 @@ button:focus{
     align-items: center;
     flex-direction: column;
 }
+.profile .left{
+    width: 100px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
-.post-container .post .avatar{
+.post .right .group{
+    height: 100%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post .right .group div{
+    margin: 0px 8px;
+    text-align: center;
+}
+
+.post .right .group svg{
+    color: white;
+}
+.post .avatar{
     height: 50px;
     width: 50px;
     border-radius: 50%;
@@ -302,6 +329,18 @@ button:focus{
     display: flex;
     overflow: hidden;
 }
+
+.profile .avatar{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    overflow: hidden;
+}
+
 
 .post-container .post .left .post-author {
     font-size: 12px;
@@ -314,6 +353,7 @@ button:focus{
     flex-direction: column;
     justify-content: center;
     margin-left: 10px;
+    align-items: center;
 }
 .post .description .upper{
     display: flex;
@@ -329,6 +369,7 @@ button:focus{
     font-size: 20px;
 }
 .post .description .lower .post-time{
+    margin-top: 8px;
     font-size: 12px;
 }
 .post .description .upper .post-author{
@@ -382,6 +423,7 @@ button:focus{
     top:0;
     display: flex;
     justify-content: center;
+    z-index: 10;
 }
 
 .body .profile-container .profile-head{
@@ -389,8 +431,6 @@ button:focus{
     display: flex;
     justify-content:space-between;
 }
-
-.body .profile-container
 
 .profile .user-info{
     display: flex;
@@ -527,6 +567,7 @@ button:focus{
     min-width: 350px;
     margin: 20px 40px;
     transition: 0.2s ease all;
+    max-width: 700px;
 }
 
 .post-detail .post:hover{
@@ -703,21 +744,6 @@ button:focus{
     cursor: pointer;
 }
 
-
-@media only screen and (min-width: 600px) and (max-width: 1200px) {
-    .main-content .post-container .post{
-        width: 95%;
-        margin: 15px;
-    }
-    .main-content .search-field input{
-        width: 80%;
-        margin-left: 20px;
-    }
-    .post-detail .post{
-        width: 95%;
-    }
-}
-
 .google-login {
     width: 100%;
     text-align: center;
@@ -731,4 +757,84 @@ button:focus{
     display: flex;
     justify-content: center;
     color: blue;
+}
+
+.collasped-menu-button{
+    background-color:#73b9b9 ;
+    color: white;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 10%;
+    right: 5%;
+}
+
+@media only screen and (min-width: 0px) and (max-width: 600px){
+    .post .description .group{
+        flex-direction: column;
+    }
+    .main-content .post-container .post{
+        width: 100%;
+        margin: 15px;
+    }
+
+    .post .right{
+        display: none;
+    }
+
+    .post-detail .reply-box{
+        padding: 0px 15px;
+    }
+    .post-detail .body{
+        padding: 0px 10px;
+    }
+    .sidebar{
+        position: fixed;
+        z-index: 1000;
+        box-shadow: 2px 0px 0px white;
+    }
+
+    .post-detail .post{
+        margin: 10px ;
+    }
+
+    .main-container .header button{
+        margin: 0;
+    }
+
+    .collasped-menu-button {
+        bottom: 10% !important;
+    }
+    .main-content .search-field input{
+        width: 80%;
+        margin-left: 20px;
+    }
+}
+
+
+@media only screen and (min-width: 600px) and (max-width: 1100px) {
+    .main-content .post-container .post{
+        width: 100%;
+        margin: 15px;
+        max-width: 1000px;
+    }
+    .main-content .search-field input{
+        width: 80%;
+        margin-left: 20px;
+    }
+    .post-detail .post{
+        width: 95%;
+        margin: 20px 10px;
+    }
+
+    .post-detail .reply-box{
+        padding: 0px 20px;
+    }
+    .post-detail .body{
+        padding: 0px 20px;
+    }
 }

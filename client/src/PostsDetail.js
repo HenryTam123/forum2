@@ -6,12 +6,24 @@ import { Link, useParams } from 'react-router-dom'
 import PersonIcon from '@material-ui/icons/Person';
 import Post from './Posts/Post/Post'
 import axios from './axios'
+import Profile from './Profile';
+
+
 const PostsDetail = ({ users, currentUser, isLoggedIn }) => {
     const { id } = useParams()
     const [thisPost, setThisPost] = useState([])
     const [responses, setResponses] = useState([]);
     const [userInput, setUserInput] = useState('')
     const [isUpdate, setIsUpdate] = useState(false)
+
+    const [show, setShow] = useState(false)
+    const [isShowProfile, setIsShowProfile] = useState(false)
+    const [selectedUser, setSelectedUser] = useState({})
+
+    const handleShowProfile = (username) => {
+        setIsShowProfile(true)
+        setSelectedUser(users.find(user => user.username === username))
+    }
 
     useEffect(() => {
         getPost()
@@ -74,6 +86,8 @@ const PostsDetail = ({ users, currentUser, isLoggedIn }) => {
 
     return (
         <div className="post-detail">
+            {isShowProfile ? <Profile user={selectedUser} closeProfile={() => setIsShowProfile(false)} /> : ''}
+
             <div className="header">
                 <button className="return-btn">
                     <Link to="/"><ArrowBackIosSharpIcon /></Link>
@@ -83,7 +97,7 @@ const PostsDetail = ({ users, currentUser, isLoggedIn }) => {
             </div>
             <div className="body">
                 {responses ? responses.map((response, index) => {
-                    return <div className={`container ${response.creator === currentUser.username ? "self" : ""}`} key={index}><div className="avatar">
+                    return <div className={`container ${response.creator === currentUser.username ? "self" : ""}`} key={index}><div className="avatar" onClick={() => handleShowProfile(response.creator)}>
                         {users ? users.map((user, index) => {
                             if (response.creator === user.username) {
                                 if (user.icon == '') {

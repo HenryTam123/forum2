@@ -56,30 +56,31 @@ const Post = ({ post, users, disable, handleLike, handleDislike }) => {
 
         <div className="lower">
           <p className="post-time">posted on {post.createdAt ? post.createdAt.substring(0, 10) : ' '}</p>
-          <div className="group">
-            <div>
-              <button className="like" onClick={() => handleLike(post._id)}>
-                <ThumbUpAltRoundedIcon />
-              </button>
-              <p className="like-count" >{post.likeCount ? post.likeCount.length : ''}</p>
-            </div>
-            <div>
-              <button className="dislike" onClick={() => handleDislike(post._id)}>
-                <ThumbDownAltRoundedIcon />
-              </button>
-              <p className="dislike-count" >{post.dislikeCount ? post.dislikeCount.length : ''}</p>
-            </div>
-            <div>
-              <button className="comment">
-                <ChatBubbleIcon />
-              </button>
-              <p className="comment-count">{post.response ? post.response.length : ''}</p>
-            </div>
-          </div>
-
         </div>
       </div>
 
+      <div className="right">
+        <div className="group">
+          <div>
+            <button className="like" onClick={() => handleLike(post._id)}>
+              <ThumbUpAltRoundedIcon />
+            </button>
+            <p className="like-count" >{post.likeCount ? post.likeCount.length : ''}</p>
+          </div>
+          <div>
+            <button className="dislike" onClick={() => handleDislike(post._id)}>
+              <ThumbDownAltRoundedIcon />
+            </button>
+            <p className="dislike-count" >{post.dislikeCount ? post.dislikeCount.length : ''}</p>
+          </div>
+          <div>
+            <button className="comment">
+              <ChatBubbleIcon />
+            </button>
+            <p className="comment-count">{post.response ? post.response.length : ''}</p>
+          </div>
+        </div>
+      </div>
     </div >
   )
 }

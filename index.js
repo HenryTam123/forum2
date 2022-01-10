@@ -49,6 +49,7 @@ app.get('/posts', postApis.getPosts);
 app.post('/posts', postApis.postPost);
 app.post('/posts/post', postApis.getSpecificPost);
 app.post('/posts/comments', postApis.getAllComments);
+app.post('/posts/response', postApis.postComment);
 app.patch('/posts/like', postApis.likePost);
 app.patch('/posts/dislike', postApis.dislikePost);
 
