@@ -36,16 +36,16 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }))
 app.use(cookieParser())
 
 app.use((req, res, next) => {
-    const allowedOrigins = ['https://tjhkg-forum-alpha.netlify.app', 'https://henrytam123.github.io', 'http://localhost:3000']
-    const origin = req.headers.origin;
-    console.log(origin)
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        console.log("run")
-    }
-    //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
-    res.header('Access-Control-Allow-Methods', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    // const allowedOrigins = ['https://tjhkg-forum-alpha.netlify.app', 'https://henrytam123.github.io', 'http://localhost:3000']
+    // const origin = req.headers.origin;
+    // console.log(origin)
+    // if (allowedOrigins.includes(origin)) {
+    //     res.setHeader('Access-Control-Allow-Origin', origin);
+    //     console.log("run")
+    // }
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization');
     res.header('Access-Control-Allow-Credentials', true);
 
     console.log(res.header)
