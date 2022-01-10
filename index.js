@@ -29,28 +29,25 @@ const app = express()
 //     credentials: true,
 // }
 
+app.use(
+    cors({
+        origin: "https://tjhkg-forum-alpha.netlify.app",
+        credentials: true
+    })
+)
+
 app.use(express.json())
 app.use(express.urlencoded({ limit: "30mb", extended: true }))
-// app.options('*', cors(corsOptions))
-// app.use(cors(corsOptions))
+
 app.use(cookieParser())
 
-app.use((req, res, next) => {
-    // const allowedOrigins = ['https://tjhkg-forum-alpha.netlify.app', 'https://henrytam123.github.io', 'http://localhost:3000']
-    // const origin = req.headers.origin;
-    // console.log(origin)
-    // if (allowedOrigins.includes(origin)) {
-    //     res.setHeader('Access-Control-Allow-Origin', origin);
-    //     console.log("run")
-    // }
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
-    res.header('Access-Control-Allow-Credentials', true);
-
-    console.log(res.header)
-    next();
-});
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+//     res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+//     res.header('Access-Control-Allow-Credentials', true);
+//     next();
+// });
 
 app.get('/categories/', categoryApis.getAllCategories);
 app.post('/categories/', categoryApis.createCategory);
