@@ -14,11 +14,8 @@ const categoryApis = require('./routes/categories')
 
 dotenv.config()
 
-
 const client = new OAuth2Client(process.env.CLIENT_ID)
 
-// const oAuth2Client = new OAuth2Client();
-// const client = new GoogleAuth(process.env.CLIENT_ID)
 const app = express()
 const allowedOrigins = ['https://tjhkg-forum-alpha.netlify.app', 'https://henrytam123.github.io', 'http://localhost:3000']
 const corsOptions = {
@@ -34,16 +31,12 @@ const corsOptions = {
 
 app.use(express.json())
 app.use(express.urlencoded({ limit: "30mb", extended: true }))
-app.options('*', cors(corsOptions))
+// app.options('*', cors(corsOptions))
 app.use(cors(corsOptions))
 app.use(cookieParser())
 
-// const store = new session.MemoryStore()
-
-// app.use('/posts', postRoutes)
 app.get('/categories/', categoryApis.getAllCategories);
 app.post('/categories/', categoryApis.createCategory);
-
 
 app.get('/posts', postApis.getPosts);
 app.post('/posts', postApis.postPost);
