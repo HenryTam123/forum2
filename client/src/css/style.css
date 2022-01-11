@@ -275,7 +275,7 @@ button:focus{
     display: flex;
     box-shadow: 0px 0px 3px grey;
     border-radius: 5px;
-    min-width: 350px;
+    min-width: 200px;
     margin: 20px;
     transition: 0.2s ease all;
     max-width: 500px;
@@ -775,11 +775,12 @@ button:focus{
     right: 5%;
 }
 
-.login-form{
+.login-form, .register-form{
     position: relative;
 }
 
-.login-form .close-button{
+.login-form .close-button,
+.register-form .close-button{
     position: absolute;
     right: 5%;
 }
