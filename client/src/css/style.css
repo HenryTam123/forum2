@@ -524,15 +524,17 @@ button:focus{
     display: flex;
     justify-content: flex-end;
     margin-top: 10px;
+    flex-direction: column;
 }
 
 .body .form-container .button-group button{
     background-color: #73b9b9;
+    width: 100%;
     padding: 10px;
     color: white;
     font-weight: bold;
-    border-radius: 5px;
-    margin: 0px 10px;
+    border-radius: 3px;
+    margin: 5px 0px;
 }
 
 .register-form .filebase-div{
@@ -773,10 +775,41 @@ button:focus{
     right: 5%;
 }
 
+.login-form{
+    position: relative;
+}
+
+.login-form .close-button{
+    position: absolute;
+    right: 5%;
+}
+
+
 @media only screen and (min-width: 0px) and (max-width: 600px){
     .post .description .group{
         flex-direction: column;
     }
+    .body .form-container form{
+        width: 95%;
+        z-index: 100;
+    }
+
+    .form-container{
+        z-index: 100;
+    }
+
+    .main-content{
+        padding: 0;
+    }
+
+    .body .form-container form input{
+        width: 100%;
+    }
+
+    .body .form-container label{
+        width: 100%;
+    }
+
     .main-content .post-container .post{
         width: 100%;
         margin: 15px;
@@ -794,7 +827,7 @@ button:focus{
     }
     .sidebar{
         position: fixed;
-        z-index: 1000;
+        z-index: 99;
         box-shadow: 2px 0px 0px white;
     }
 

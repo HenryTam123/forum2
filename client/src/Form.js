@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import axios from './axios'
+import React, { useState } from 'react';
+import axios from './axios';
+import CloseIcon from '@material-ui/icons/Close';
+
 
 const Form = ({ handleFormVisible, categories, currentUser }) => {
 
@@ -20,7 +22,7 @@ const Form = ({ handleFormVisible, categories, currentUser }) => {
 
         <div className="form-container">
             <div className="overlay-background" onClick={() => handleFormVisible(false)}></div>
-            <form onSubmit={(e) => handleSubmit(e)}>
+            <form className="login-form" onSubmit={(e) => handleSubmit(e)}>
                 <h2>Create new post here</h2>
                 <label>Title <input autoComplete="off" type="text" name="title" value={title} required onChange={(e) => setTitle(e.target.value)}></input></label>
 
@@ -33,9 +35,10 @@ const Form = ({ handleFormVisible, categories, currentUser }) => {
                         ))}
                     </select></label>
                 <div className="button-group">
-                    <button type="button" className="cancel-btn" onClick={() => handleFormVisible(false)}>Cancel</button>
                     <button type="submit" className="submit-btn" >Submit</button>
                 </div>
+                <button className="close-button" onClick={() => handleFormVisible(false)}><CloseIcon /></button>
+
             </form>
         </div>
     )

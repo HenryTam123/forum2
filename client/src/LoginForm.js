@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { handleGoogleLogin } from './helpers/googleLogin.js';
 import { useHistory } from "react-router-dom";
+import CloseIcon from '@material-ui/icons/Close';
 
 
 // const clientId = "788803847730-svb1dp8j89olr8o0rh1g30a7kl8ugbk6.apps.googleusercontent.com";
@@ -44,11 +45,11 @@ const LoginForm = ({ handleLogin, login, err, setCurrentUser, setIsLoggedIn, set
         <div className="form-container">
             <div className="overlay-background" onClick={() => handleLogin(false)}></div>
             <form className="login-form" onSubmit={(e) => handleSubmit(e)}>
+                <button className="close-button" onClick={() => handleLogin(false)}><CloseIcon /></button>
                 <h2>Login with your account </h2>
                 <label>Username <span className="warning">{err}</span><input autoComplete="off" type="text" name="username" value={username} required onChange={(e) => setUsername(e.target.value)}></input></label>
                 <label>Password <input autoComplete="off" type="password" name="password" value={password} required onChange={(e) => setPassword(e.target.value)}></input></label>
                 <div className="button-group">
-                    <button type="button" className="cancel-btn" onClick={() => handleLogin(false)}>Cancel</button>
                     <button type="submit" className="submit-btn" >Login</button>
                 </div>
                 <GoogleLogin

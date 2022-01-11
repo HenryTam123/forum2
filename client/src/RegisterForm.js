@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from './axios'
 import FileBase from 'react-file-base64'
+import CloseIcon from '@material-ui/icons/Close';
 
 
 const RegisterForm = ({ handleRegister }) => {
@@ -52,13 +53,14 @@ const RegisterForm = ({ handleRegister }) => {
                 <label>Confirm Password <input autoComplete="off" type="password" name="confirm-password" value={confirmPassword} required onChange={(e) => setConfirmPassword(e.target.value)}></input></label>
                 <div className="filebase-div">
                     <label>Choose Your Favourite Icon
-                    <FileBase type="file" multiple={false} onDone={({ base64 }) => { setSelectedFile(base64) }} />
+                        <FileBase type="file" multiple={false} onDone={({ base64 }) => { setSelectedFile(base64) }} />
                     </label>
                 </div>
                 <div className="button-group">
-                    <button type="button" className="cancel-btn" onClick={() => handleRegister(false)}>Cancel</button>
                     <button type="submit" className="submit-btn">Register</button>
                 </div>
+                <button className="close-button" onClick={() => handleRegister(false)}><CloseIcon /></button>
+
             </form>
         </div>
 
