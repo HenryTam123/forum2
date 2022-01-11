@@ -4,7 +4,8 @@ import { handleGoogleLogin } from './helpers/googleLogin.js';
 import { useHistory } from "react-router-dom";
 
 
-const clientId = "788803847730-svb1dp8j89olr8o0rh1g30a7kl8ugbk6.apps.googleusercontent.com";
+// const clientId = "788803847730-svb1dp8j89olr8o0rh1g30a7kl8ugbk6.apps.googleusercontent.com";
+const clientId = "788803847730-cnbga9ri15pv9v09gb8vf5im9omoah7v.apps.googleusercontent.com"
 
 const LoginForm = ({ handleLogin, login, err, setCurrentUser, setIsLoggedIn, setIsLogging }) => {
     let history = useHistory();
@@ -42,7 +43,7 @@ const LoginForm = ({ handleLogin, login, err, setCurrentUser, setIsLoggedIn, set
     return (
         <div className="form-container">
             <div className="overlay-background" onClick={() => handleLogin(false)}></div>
-            <form className="login-form" onSubmit={handleSubmit}>
+            <form className="login-form" onSubmit={(e) => handleSubmit(e)}>
                 <h2>Login with your account </h2>
                 <label>Username <span className="warning">{err}</span><input autoComplete="off" type="text" name="username" value={username} required onChange={(e) => setUsername(e.target.value)}></input></label>
                 <label>Password <input autoComplete="off" type="password" name="password" value={password} required onChange={(e) => setPassword(e.target.value)}></input></label>
