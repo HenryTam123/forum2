@@ -91,8 +91,6 @@ app.post('/register', async (req, res) => {
     const user = req.body
     const newUser = new User(user)
     const user2 = await User.findOne({ username: req.body.username })
-    console.log(user)
-
     if (user2) {
         res.json({ success: 'false', message: 'This usernmae has been used ' })
     } else {
@@ -132,7 +130,6 @@ app.post('/login', async (req, res) => {
 })
 
 app.post('/logout', (req, res) => {
-    console.log('logout')
     res.json({ message: "logout" })
 })
 
@@ -168,7 +165,6 @@ app.post("/api/v1/auth/google", async (req, res) => {
             async (err, login) => {
                 ticket = login._payload
                 let existingUser = await User.findOne({ email: ticket.email })
-                console.log(login)
                 returnUser = existingUser;
 
                 if (!existingUser) {
